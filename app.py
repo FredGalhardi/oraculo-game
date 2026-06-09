@@ -56,7 +56,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# --- CSS CUSTOMIZADO: CORREÇÃO HACKER DEFINITIVA (FUNDO PRETO, LETRA VERDE) ---
+# --- CSS CUSTOMIZADO: HACKER DEFINITIVO (CAIXAS E MENUS PRETOS COM VERDE) ---
 st.markdown("""
 <style>
     /* Fundo principal do app */
@@ -70,7 +70,7 @@ st.markdown("""
         font-family: 'Helvetica Neue', Arial, sans-serif;
     }
     
-    /* ======== OBRIGAR CAIXAS DE TEXTO A SEREM PRETAS E VERDES ======== */
+    /* ======== CAIXA DE TEXTO (TEXTAREA) ======== */
     .stTextArea textarea {
         background-color: #000000 !important;
         color: #00FF00 !important;
@@ -79,27 +79,26 @@ st.markdown("""
         font-weight: bold !important;
     }
     
-    /* ======== OBRIGAR A CAIXA FECHADA DO SELECTBOX A SER PRETA E VERDE ======== */
-    .stSelectbox div[data-baseweb="select"] {
+    /* ======== CAIXA PRINCIPAL DO SELECTBOX (QUANDO FECHADA) ======== */
+    /* O 'div' interno é o que realmente renderiza a cor de fundo cinza no Streamlit */
+    div[data-baseweb="select"] > div {
         background-color: #000000 !important;
         border: 2px solid #00FF00 !important;
     }
-    .stSelectbox div[data-baseweb="select"] span {
+    
+    /* O '*' força que o texto selecionado e até a setinha fiquem verdes */
+    div[data-baseweb="select"] * {
         color: #00FF00 !important;
         font-weight: bold !important;
-        font-size: 16px !important;
     }
 
-    /* ======== CORREÇÃO BLINDADA PARA O MENU QUE ABRE (POPOVER) ======== */
-    /* Garante que o container flutuante seja preto */
-    div[data-baseweb="popover"], 
+    /* ======== O MENU SUSPENSO (POPOVER QUE ABRE) ======== */
     div[data-baseweb="popover"] > div, 
     ul[role="listbox"] {
         background-color: #000000 !important;
-        border: 1px solid #00FF00 !important;
+        border: 2px solid #00FF00 !important;
     }
     
-    /* Garante que as opções da lista sejam pretas com letras verdes */
     li[role="option"] {
         background-color: #000000 !important;
         color: #00FF00 !important;
@@ -107,7 +106,6 @@ st.markdown("""
         font-size: 16px !important;
     }
     
-    /* Efeito ao passar o dedo/mouse por cima de uma opção na lista (Inverte as cores) */
     li[role="option"]:hover, 
     li[aria-selected="true"] {
         background-color: #00FF00 !important;
