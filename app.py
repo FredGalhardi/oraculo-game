@@ -56,7 +56,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# --- CSS CUSTOMIZADO: CORREÇÃO HACKER (FUNDO PRETO, LETRA VERDE) ---
+# --- CSS CUSTOMIZADO: CORREÇÃO HACKER DEFINITIVA (FUNDO PRETO, LETRA VERDE) ---
 st.markdown("""
 <style>
     /* Fundo principal do app */
@@ -64,14 +64,14 @@ st.markdown("""
         background: linear-gradient(180deg, #0D0A1C 0%, #160F29 100%) !important;
     }
     
-    /* Textos gerais do app (títulos, parágrafos) em branco para contraste */
+    /* Textos gerais do app em branco para contraste */
     h1, h2, h3, h4, h5, h6, p, span, label, li, div {
         color: #FFFFFF;
         font-family: 'Helvetica Neue', Arial, sans-serif;
     }
     
-    /* ======== OBRIGAR CAMPOS DE TEXTO E SELECT A SEREM PRETOS COM VERDE ======== */
-    .stTextArea textarea, .stSelectbox div[data-baseweb="select"] {
+    /* ======== OBRIGAR CAIXAS DE TEXTO A SEREM PRETAS E VERDES ======== */
+    .stTextArea textarea {
         background-color: #000000 !important;
         color: #00FF00 !important;
         border: 2px solid #00FF00 !important;
@@ -79,25 +79,39 @@ st.markdown("""
         font-weight: bold !important;
     }
     
-    /* Forçar a cor verde no texto dentro do selectbox fechado */
-    .stSelectbox div[data-baseweb="select"] span {
-        color: #00FF00 !important;
-    }
-    
-    /* Forçar a lista suspensa (o menu que abre) a ser preta com letras verdes */
-    div[role="listbox"] {
+    /* ======== OBRIGAR A CAIXA FECHADA DO SELECTBOX A SER PRETA E VERDE ======== */
+    .stSelectbox div[data-baseweb="select"] {
         background-color: #000000 !important;
         border: 2px solid #00FF00 !important;
     }
-    div[role="listbox"] li {
+    .stSelectbox div[data-baseweb="select"] span {
+        color: #00FF00 !important;
+        font-weight: bold !important;
+        font-size: 16px !important;
+    }
+
+    /* ======== CORREÇÃO BLINDADA PARA O MENU QUE ABRE (POPOVER) ======== */
+    /* Garante que o container flutuante seja preto */
+    div[data-baseweb="popover"], 
+    div[data-baseweb="popover"] > div, 
+    ul[role="listbox"] {
+        background-color: #000000 !important;
+        border: 1px solid #00FF00 !important;
+    }
+    
+    /* Garante que as opções da lista sejam pretas com letras verdes */
+    li[role="option"] {
         background-color: #000000 !important;
         color: #00FF00 !important;
         font-weight: bold !important;
+        font-size: 16px !important;
     }
-    /* Efeito de hover na lista suspensa */
-    div[role="listbox"] li:hover {
-        background-color: #004400 !important; 
-        color: #FFFFFF !important;
+    
+    /* Efeito ao passar o dedo/mouse por cima de uma opção na lista (Inverte as cores) */
+    li[role="option"]:hover, 
+    li[aria-selected="true"] {
+        background-color: #00FF00 !important;
+        color: #000000 !important;
     }
     /* ========================================================================= */
     
@@ -160,7 +174,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# --- INICIALIZAÇÃO ROBUSTA DO ESTADO DO JOGO ---
+# --- INICIALIZAÇÃO DO ESTADO ---
 def init_game_state():
     state_keys = {
         'phase': 'setup',
@@ -179,7 +193,7 @@ def init_game_state():
 
 init_game_state()
 
-# --- SORTEIO DINÂMICO E ASSETRIA ---
+# --- SORTEIO E ATRIBUIÇÃO ---
 def shuffle_and_assign(players, context):
     random.shuffle(players)
     roles_config = GAME_DATA[context]['roles']
@@ -192,7 +206,7 @@ def shuffle_and_assign(players, context):
         
     return assigned
 
-# --- TELA 1: CONFIGURAÇÃO ENÉRGICA ---
+# --- TELA 1: CONFIGURAÇÃO ---
 def render_setup():
     st.markdown("<p class='main-title'>🔮 ORÁCULO NEON 🔮</p>", unsafe_allow_html=True)
     st.markdown("<p class='subtitle'>O Party Game Definitivo para sua Roda de Amigos!</p>", unsafe_allow_html=True)
@@ -231,7 +245,7 @@ def render_setup():
             st.session_state.phase = 'distribution'
             st.rerun()
 
-# --- TELA 2: DISTRIBUIÇÃO - PASSA-PASSA (ANTI-SPOILER) ---
+# --- TELA 2: DISTRIBUIÇÃO ---
 def render_distribution():
     idx = st.session_state.current_player_idx
     players = st.session_state.players
@@ -273,7 +287,7 @@ def render_distribution():
             st.session_state.current_player_idx += 1
             st.rerun()
 
-# --- TELA 3: AS RODADAS DE DEBATE E CAOS ---
+# --- TELA 3: RODADAS ---
 def render_rounds():
     round_idx = st.session_state.round_num
     context_data = GAME_DATA[st.session_state.context]
@@ -339,7 +353,7 @@ def render_rounds():
             st.session_state.show_round_secret = False
             st.rerun()
 
-# --- TELA 4: VEREDITO FINAL E FESTA DO RESULTADO ---
+# --- TELA 4: VEREDITO ---
 def render_voting():
     st.markdown("<p class='main-title'>⚖️ HORA DO VEREDITO ⚖️</p>", unsafe_allow_html=True)
     st.markdown("<p style='text-align:center; font-size:16px;'>Discutam, debatam e cheguem a um consenso na mesa:</p>", unsafe_allow_html=True)
@@ -379,7 +393,7 @@ def render_voting():
                 st.session_state.clear()
                 st.rerun()
 
-# --- ROTEADOR PRINCIPAL ---
+# --- ROTEADOR ---
 def main():
     if st.session_state.phase == 'setup':
         render_setup()
