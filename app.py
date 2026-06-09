@@ -56,46 +56,69 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# --- CSS CUSTOMIZADO: MODO ESCURO VIBRANTE + ALTA LEGIBILIDADE ---
+# --- CSS CUSTOMIZADO: CORREÇÃO HACKER (FUNDO PRETO, LETRA VERDE) ---
 st.markdown("""
 <style>
-    /* Forçar fundo super escuro e moderno estilo balada */
+    /* Fundo principal do app */
     .stApp {
         background: linear-gradient(180deg, #0D0A1C 0%, #160F29 100%) !important;
     }
     
-    /* Garantir que TODO texto padrão seja branco puro, sem letras pretas */
+    /* Textos gerais do app (títulos, parágrafos) em branco para contraste */
     h1, h2, h3, h4, h5, h6, p, span, label, li, div {
-        color: #FFFFFF !important;
+        color: #FFFFFF;
         font-family: 'Helvetica Neue', Arial, sans-serif;
     }
     
-    /* Inputs, Textareas e Selectboxes com alta visibilidade e texto claro */
+    /* ======== OBRIGAR CAMPOS DE TEXTO E SELECT A SEREM PRETOS COM VERDE ======== */
     .stTextArea textarea, .stSelectbox div[data-baseweb="select"] {
-        background-color: #241B45 !important;
-        color: #FFFFFF !important;
-        border: 2px solid #7B2CBF !important;
+        background-color: #000000 !important;
+        color: #00FF00 !important;
+        border: 2px solid #00FF00 !important;
         font-size: 16px !important;
+        font-weight: bold !important;
     }
     
-    /* Títulos Estilizados e Alegres */
+    /* Forçar a cor verde no texto dentro do selectbox fechado */
+    .stSelectbox div[data-baseweb="select"] span {
+        color: #00FF00 !important;
+    }
+    
+    /* Forçar a lista suspensa (o menu que abre) a ser preta com letras verdes */
+    div[role="listbox"] {
+        background-color: #000000 !important;
+        border: 2px solid #00FF00 !important;
+    }
+    div[role="listbox"] li {
+        background-color: #000000 !important;
+        color: #00FF00 !important;
+        font-weight: bold !important;
+    }
+    /* Efeito de hover na lista suspensa */
+    div[role="listbox"] li:hover {
+        background-color: #004400 !important; 
+        color: #FFFFFF !important;
+    }
+    /* ========================================================================= */
+    
+    /* Títulos Estilizados */
     .main-title {
         font-size: 32px !important; 
         font-weight: 900 !important; 
         text-align: center; 
-        color: #00F5D4 !important; /* Neon Mint */
+        color: #00F5D4 !important;
         text-shadow: 0px 0px 12px rgba(0, 245, 212, 0.6);
         margin-bottom: 5px;
     }
     .subtitle {
         font-size: 16px !important;
         text-align: center;
-        color: #FF007F !important; /* Neon Pink */
+        color: #FF007F !important;
         font-weight: bold;
         margin-bottom: 25px;
     }
     
-    /* Caixas de Informação Estilo 'Card de Jogo' */
+    /* Cards */
     .secret-card { 
         background: linear-gradient(135deg, #4F0026 0%, #2A0013 100%); 
         padding: 22px; 
@@ -115,7 +138,7 @@ st.markdown("""
         margin: 15px 0;
     }
     
-    /* BOTÕES GIGANTES: Perfeitos para o dedão no celular durante a resenha */
+    /* Botões Gigantes */
     div.stButton > button { 
         height: 65px !important; 
         font-size: 18px !important; 
@@ -130,7 +153,6 @@ st.markdown("""
     div.stButton > button:active {
         transform: scale(0.96);
     }
-    /* Botões Primários com Destaque Neon Rosa */
     div.stButton > button[data-testid="stBaseButton-primary"] {
         background: linear-gradient(90deg, #FF007F 0%, #FF5E00 100%) !important;
         box-shadow: 0px 6px 20px rgba(255, 0, 127, 0.5) !important;
@@ -163,7 +185,6 @@ def shuffle_and_assign(players, context):
     roles_config = GAME_DATA[context]['roles']
     assigned = {}
     
-    # 1 Vilão, 1 Especial, resto Inocente/Normal
     assigned[players[0]] = roles_config['bad']
     assigned[players[1]] = roles_config['special']
     for p in players[2:]:
@@ -188,9 +209,8 @@ def render_setup():
         st.markdown(f"🎉 **{len(players)} jogadores prontos para a diversão!** (Mínimo 3, Máximo 8)")
     
     st.markdown("### 🌆 2. Escolha o Cenário da Rodada")
-    context = st.selectbox("", list(GAME_DATA.keys()))
+    context = st.selectbox("Selecione o Mistério:", list(GAME_DATA.keys()))
     
-    # Caixa informativa estilizada e clara
     st.markdown(f"""
     <div style='background-color: #1A1235; padding: 15px; border-radius: 12px; border-left: 5px solid #00F5D4; margin-bottom: 20px;'>
         <p style='margin:0; font-size:15px; line-height:1.4;'>{GAME_DATA[context]['desc']}</p>
@@ -218,7 +238,7 @@ def render_distribution():
     
     if idx >= len(players):
         st.markdown("<p class='main-title'>🎉 TUDO PRONTO! 🎉</p>", unsafe_allow_html=True)
-        st.markdown("<p class='center-text' style='text-align:center; font-size:18px;'>Todos já sabem seus papéis secretos. Coloque o celular no centro da mesa!</p>", unsafe_allow_html=True)
+        st.markdown("<p style='text-align:center; font-size:18px;'>Todos já sabem seus papéis secretos. Coloque o celular no centro da mesa!</p>", unsafe_allow_html=True)
         st.write("")
         if st.button("🚀 COMEÇAR RODADA 1", use_container_width=True, type="primary"):
             st.session_state.phase = 'rounds'
@@ -266,7 +286,6 @@ def render_rounds():
     st.markdown(f"<p class='main-title'>🔥 RODADA {round_idx + 1} DE 3 🔥</p>", unsafe_allow_html=True)
     st.markdown("<p style='text-align:center; color:#9D4EDD !important; font-weight:bold;'>📱 CELULAR NO CENTRO DA MESA PARA TODOS VEREM!</p>", unsafe_allow_html=True)
     
-    # Card do Fato Público (Texto super visível)
     st.markdown(f"""
     <div class='public-card'>
         <h4 style='color: #00F5D4 !important; margin-top:0; font-size:18px;'>📢 REVELAÇÃO DO ORÁCULO</h4>
@@ -274,7 +293,6 @@ def render_rounds():
     </div>
     """, unsafe_allow_html=True)
     
-    # Definir os dois sortudos que lerão a pista
     if not st.session_state.readers:
         st.session_state.readers = random.sample(st.session_state.players, 2)
     
@@ -301,7 +319,6 @@ def render_rounds():
             
     st.divider()
     
-    # Cronômetro visual animado para pressionar a mesa
     st.markdown("<h3 style='text-align:center;'>⏱️ 3 Minutos de Debate Intenso!</h3>", unsafe_allow_html=True)
     
     timer_placeholder = st.empty()
@@ -311,7 +328,6 @@ def render_rounds():
         if st.button("▶️ Iniciar Timer", use_container_width=True):
             with timer_placeholder:
                 bar = st.progress(0)
-                # Escalonado rápido de 10s para testes fluidos no MVP. Para 3min reais, use sleep mais longo ou lógica de datetime.
                 for i in range(100):
                     time.sleep(0.06) 
                     bar.progress(i + 1)
@@ -328,7 +344,6 @@ def render_voting():
     st.markdown("<p class='main-title'>⚖️ HORA DO VEREDITO ⚖️</p>", unsafe_allow_html=True)
     st.markdown("<p style='text-align:center; font-size:16px;'>Discutam, debatam e cheguem a um consenso na mesa:</p>", unsafe_allow_html=True)
     
-    # Selectbox estilizado
     suspect = st.selectbox("Quem a mesa vai apontar como o grande culpado?", ["(Escolha um jogador da mesa)"] + st.session_state.players)
     
     if suspect != "(Escolha um jogador da mesa)":
@@ -355,7 +370,6 @@ def render_voting():
                 </div>
                 """, unsafe_allow_html=True)
             
-            # Tabela final de Revelação
             st.markdown("<h3 style='margin-top:30px; text-align:center;'>📋 Papéis de Todo Mundo:</h3>", unsafe_allow_html=True)
             for p, role in st.session_state.roles.items():
                 st.markdown(f"• **{p}**: {role}")
